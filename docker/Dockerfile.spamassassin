@@ -1,0 +1,17 @@
+# Use Debian as the base image
+FROM debian:latest
+
+# Install SpamAssassin and required packages
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y spamassassin libmail-dmarc-policy-perl && \
+    apt-get clean
+
+# Enable SSL/TLS support for SpamAssassin
+RUN sed -i 's/^#allow_full_enable.*$/allow_full_enable 1/' /etc/spamassassin/local.cf && \
+    sed -i 's/^#ssl_options.*$/ssl_options +TLSv1_3/' /etc/spamassassin/local.cf
+
+# Expose SpamAssassin daemon port
+EXPOSE 783
+
+# Start SpamAssassin
+CMD ["spamd", "--nouser-config", "--max-children", "5", "--helper-home-dir=/var/lib/spamassassin"]

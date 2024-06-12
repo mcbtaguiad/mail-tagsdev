@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: postfix
+  labels:
+    app: postfix
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: postfix
+
+  ports:
+    # Transfer
+    - name: transfer
+      port: 25
+      targetPort: 25
+      protocol: TCP
+    # ESMTP with implicit TLS
+    - name: esmtp-implicit
+      port: 465
+      targetPort: 465
+      protocol: TCP
+    # ESMTP with explicit TLS (STARTTLS)
+    - name: esmtp-explicit
+      port: 587
+      targetPort: 587
+      protocol: TCP
+
+

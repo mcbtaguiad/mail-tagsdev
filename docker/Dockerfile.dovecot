@@ -1,0 +1,28 @@
+# Use Ubuntu as the base image
+FROM debian:latest
+
+# Install Dovecot
+RUN apt-get update && \
+    apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd libsasl2-modules && \
+    apt-get clean
+
+RUN groupadd -g 1000 vmail && \
+    useradd -u 1000 -g 1000 vmail -d /srv/vmail && \
+    passwd -l vmail && \
+    mkdir /srv/mail && \
+    chown vmail:vmail /srv/mail
+
+# Expose IMAP and LMTP ports
+EXPOSE 995 993
+
+# Copy custom configuration files
+COPY /resources/dovecot.conf /etc/dovecot/dovecot.conf
+COPY /resources/ssl-params.conf /etc/dovecot/ssl-params.conf
+
+# Generate SSL certificates self-signed
+# RUN mkdir -p /etc/dovecot/ssl && \
+#     openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/dovecot/ssl/dovecot.key -out /etc/dovecot/ssl/dovecot.crt -days 365 -subj "/C=US/ST=California/L=San Francisco/O=Example/CN=example.com" && \
+#     chmod 600 /etc/dovecot/ssl/*
+
+# Start Dovecot
+CMD ["dovecot", "-F"]

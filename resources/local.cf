@@ -1,0 +1,12 @@
+ifplugin Mail::SpamAssassin::Plugin::AskDNS
+askdns __DMARC_POLICY_NONE   _dmarc._AUTHORDOMAIN_ TXT /^v=DMARC1;.*\bp=none;/
+askdns __DMARC_POLICY_QUAR   _dmarc._AUTHORDOMAIN_ TXT /^v=DMARC1;.*\bp=quarantine;/
+askdns __DMARC_POLICY_REJECT _dmarc._AUTHORDOMAIN_ TXT /^v=DMARC1;.*\bp=reject;/
+
+meta DMARC_REJECT !(DKIM_VALID_AU || SPF_PASS || SPF_HELO_PASS) && __DMARC_POLICY_REJECT
+score DMARC_REJECT 5
+meta DMARC_QUAR   !(DKIM_VALID_AU || SPF_PASS || SPF_HELO_PASS) && __DMARC_POLICY_QUAR
+score DMARC_QUAR 2.5
+meta DMARC_NONE   !(DKIM_VALID_AU || SPF_PASS || SPF_HELO_PASS) && __DMARC_POLICY_NONE
+score DMARC_NONE 0.1
+endif # Mail::SpamAssassin::Plugin::AskDNS

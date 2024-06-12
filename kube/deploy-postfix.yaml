@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postfix
+  template:
+    metadata:
+      labels:
+        app: postfix
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - 'amd64'
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 15
+            preference:
+              matchExpressions:
+              - key: core
+                operator: In
+                values:
+                - '4'
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: core
+                operator: In
+                values:
+                - '3'
+      #hostNetwork: true
+      hostname: postfix
+      imagePullSecrets:
+      - name: ghcr.io
+      containers:
+      - name: postfix
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/postfix:v0.0.1-test
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          privileged: false
+          capabilities:
+            add:
+            # file permission capabilities
+            - CHOWN
+            - FOWNER
+            - MKNOD
+            - SETGID
+            - SETUID
+            - DAC_OVERRIDE
+            # network capabilities
+            - NET_ADMIN # needed for F2B
+            - NET_RAW # needed for F2B
+            - NET_BIND_SERVICE
+            # miscellaneous  capabilities
+            - SYS_CHROOT
+            - KILL
+            drop: [ALL]
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          limits:
+            memory: 500Mi
+            cpu: 500m
+          requests:
+            memory: 100Mi
+            cpu: 250m
+
+        volumeMounts:
+        - mountPath: /etc/postfix/ssl/
+          name: postfix-tls
+        ports:
+        - name: transfer
+          containerPort: 25
+          protocol: TCP
+          #hostPort: 25
+        - name: esmtp-implicit
+          containerPort: 465
+          protocol: TCP
+          #hostPort: 465
+        - name: esmtp-explicit
+          containerPort: 587
+          protocol: TCP
+          #hostPort: 587
+
+        # envFrom:
+        # - configMapRef:
+        #     name: postfix.environment
+
+      restartPolicy: Always
+      #nodeSelector:
+      #  kubernetes.io/hostname: luna
+
+      volumes:
+      # certificates
+      - name: postfix-tls
+        secret:
+          secretName: mail-tls
+          items:
+          - key: tls.crt
+            path: tls.crt
+          - key: tls.key
+            path: tls.key
+
+
+
+
