@@ -80,26 +80,34 @@ spec:
             cpu: 250m
 
         volumeMounts:
-        # - name: data
-        #   mountPath: /var/mail/vhosts
-        #   readOnly: false
+        - name: data
+          mountPath: /var/mail/vhosts/tagsdev.xyz
+          readOnly: false
 
         - mountPath: /etc/mail/ssl/
           name: mail-tls
         ports:
-        - name: transfer
+        - name: smtp
           containerPort: 25
           protocol: TCP
           #hostPort: 25
-        - name: esmtp-explicit
+        - name: submission
           containerPort: 587
           protocol: TCP
           #hostPort: 587
-        - name: imap-implicit
+        - name: smtps
+          containerPort: 465
+          protocol: TCP
+          #hostPort: 465
+        - name: pop3s
+          containerPort: 995
+          protocol: TCP
+          #hostPort: 995
+        - name: imaps
           containerPort: 993
           protocol: TCP
           #hostPort: 993
-        - name: pop3-implicit
+        - name: imap
           containerPort: 143
           protocol: TCP
           #hostPort: 143
@@ -107,6 +115,19 @@ spec:
         # envFrom:
         # - configMapRef:
         #     name: mail.environment
+      initContainers:
+      - name: volume-permission
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          - 'chown -R 5000:5000 /var/mail/vhosts/tagsdev.xyz'
+          - 'chmod -R 775 /var/mail/vhosts/tagsdev.xyz' 
+        volumeMounts:
+          - name: data
+            mountPath: /var/mail/vhosts/tagsdev.xyz
+        securityContext:
+          runAsUser: 0
 
       restartPolicy: Always
       #nodeSelector:

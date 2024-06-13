@@ -15,8 +15,11 @@ echo "starting postfix"
 # sleep 10 
 postmap /etc/postfix/virtual_alias &
 postfix start &
+# needed to run if pvc is mounted and not fresh install
+/etc/init.d/postfix reload &
 
 echo "starting dovecot"
+
 dovecot -F &
 
 # echo "starting amavis"

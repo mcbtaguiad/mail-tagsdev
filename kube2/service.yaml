@@ -14,19 +14,27 @@ spec:
     app: mail
 
   ports:
-    - name: transfer
+    - name: smtp
       port: 25
       targetPort: 25
       protocol: TCP
-    - name: esmtp-explicit
+    - name: smtps
+      port: 465
+      targetPort: 465
+      protocol: TCP
+    - name: submission
       port: 587
       targetPort: 587
       protocol: TCP
-    - name: imap-implicit
+    - name: pop3s
+      port: 995
+      targetPort: 995
+      protocol: TCP
+    - name: imaps
       port: 993
       targetPort: 993
       protocol: TCP
-    - name: pop3-implicit
+    - name: imap
       port: 143
       targetPort: 143
       protocol: TCP
