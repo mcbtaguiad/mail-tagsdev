@@ -1,6 +1,7 @@
 version: "3.9"
 services:
     mail-tagsdev:
+        hostname: mail.tagsdev.xyz
         container_name: mail-tagsdev
         image: ghcr.io/mcbtaguiad/mail-tagsdev/mail:v0.0.1-test
         build:

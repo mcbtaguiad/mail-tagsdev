@@ -18,6 +18,10 @@ EXPOSE 995 993
 # Copy custom configuration files
 COPY /resources/dovecot.conf /etc/dovecot/dovecot.conf
 COPY /resources/ssl-params.conf /etc/dovecot/ssl-params.conf
+COPY resources/main.cf /etc/postfix/main.cf
+COPY resources/master.cf /etc/postfix/master.cf
+COPY resources/virtual_domains /etc/postfix/virtual_domains
+
 
 # Generate SSL certificates self-signed
 # RUN mkdir -p /etc/dovecot/ssl && \

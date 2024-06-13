@@ -37,9 +37,10 @@ spec:
                 values:
                 - '4'
       #hostNetwork: true
-      hostname: mail-tagsdev
+      # hostname: 'mail'
       imagePullSecrets:
       - name: ghcr.io
+      # subdomain: mail
       containers:
       - name: mail
         image: ghcr.io/mcbtaguiad/mail-tagsdev/mail:v0.0.1-test
