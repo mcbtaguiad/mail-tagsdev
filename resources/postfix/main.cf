@@ -3,9 +3,7 @@ biff = no
 append_dot_mydomain = no
 readme_directory = no
 
-# Disabled as not compatible with Dovecot
 smtputf8_enable = no
-readme_directory = no
 myhostname = mail.tagsdev.xyz
 mydomain = mail.tagsdev.xyz
 myorigin = tagsdev.xyz
@@ -45,6 +43,7 @@ dovecot_destination_recipient_limit = 1
 ##SASL##
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_path = private/auth
+# smtpd_sasl_path = inet:dovecot:50001
 smtpd_sasl_type = dovecot
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_local_domain = $mydomain

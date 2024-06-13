@@ -1,32 +1,40 @@
 # Use Ubuntu as the base image
-FROM debian:latest
+FROM ubuntu:24.10
 
-# Install Dovecot
+LABEL Maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
+LABEL Description="Docker Mail"
+
 RUN apt-get update && \
-    apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd libsasl2-modules && \
+    apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd dovecot-pop3d dovecot-sieve opendkim libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
-RUN groupadd -g 1000 vmail && \
-    useradd -u 1000 -g 1000 vmail -d /srv/vmail && \
-    passwd -l vmail && \
-    mkdir /srv/mail && \
-    chown vmail:vmail /srv/mail
+RUN groupadd -g 5000 vmail && \
+    useradd -s /usr/sbin/nologin -u 5000 -g 5000 vmail && \
+    usermod -aG vmail dovecot && \
+    mkdir -p /var/mail/vhosts/tagsdev.xyz && \
+    chown -R vmail:vmail /var/mail/vhosts && \
+    chmod -R 775 /var/mail/vhosts && \
+    mkdir -p /var/log/mail && \
+    touch /var/log/mail/dovecot && \
+    chgrp vmail /var/log/mail/dovecot && \
+    chmod 660 /var/log/mail/dovecot && \
+    echo 'mail.tagsdev.xyz' > /etc/mailname
 
-# Expose IMAP and LMTP ports
-EXPOSE 995 993
+RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
+    sysctl -p
+
 
 # Copy custom configuration files
-COPY /resources/dovecot.conf /etc/dovecot/dovecot.conf
-COPY /resources/ssl-params.conf /etc/dovecot/ssl-params.conf
-COPY resources/main.cf /etc/postfix/main.cf
-COPY resources/master.cf /etc/postfix/master.cf
-COPY resources/virtual_domains /etc/postfix/virtual_domains
+COPY resources/dovecot.conf /etc/dovecot/dovecot.conf
+# COPY resources/ssl-params.conf /etc/dovecot/ssl-params.conf
+COPY resources/opendkim.conf /etc/opendkim.conf
 
+WORKDIR /app
 
-# Generate SSL certificates self-signed
-# RUN mkdir -p /etc/dovecot/ssl && \
-#     openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/dovecot/ssl/dovecot.key -out /etc/dovecot/ssl/dovecot.crt -days 365 -subj "/C=US/ST=California/L=San Francisco/O=Example/CN=example.com" && \
-#     chmod 600 /etc/dovecot/ssl/*
+COPY scripts/add_user.sh /app
+RUN chmod a+x  /app/add_user.sh
 
-# Start Dovecot
-CMD ["dovecot", "-F"]
+COPY scripts/entrypoint-dovecot.sh /app
+RUN chmod a+x  /app/entrypoint-dovecot.sh
+
+ENTRYPOINT ["/app/entrypoint-dovecot.sh"]

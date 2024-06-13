@@ -79,7 +79,7 @@ spec:
             cpu: 250m
 
         volumeMounts:
-        - mountPath: /etc/postfix/ssl/
+        - mountPath: /etc/mail/ssl/
           name: postfix-tls
         ports:
         - name: transfer

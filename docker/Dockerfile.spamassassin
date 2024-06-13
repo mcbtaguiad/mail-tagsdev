@@ -1,17 +1,25 @@
-# Use Debian as the base image
+# Use Ubuntu as base image
 FROM debian:latest
 
-# Install SpamAssassin and required packages
+# Install required packages
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y spamassassin libmail-dmarc-policy-perl && \
-    apt-get clean
+    apt-get install -y spamassassin spamc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Enable SSL/TLS support for SpamAssassin
-RUN sed -i 's/^#allow_full_enable.*$/allow_full_enable 1/' /etc/spamassassin/local.cf && \
-    sed -i 's/^#ssl_options.*$/ssl_options +TLSv1_3/' /etc/spamassassin/local.cf
+# Copy custom configuration file
+COPY resources/spamassassin/spamassassin /etc/spamassassin/spamassassin
+COPY resources/spamassassin/local.cf /etc/mail/spamassassin/local.cf
+COPY resources/spamassassin/local.cf /etc/spamassassin/local.cf
 
-# Expose SpamAssassin daemon port
-EXPOSE 783
+# Expose the required ports for SpamAssassin (optional)
+# Expose port 783 for spamd if needed
+# EXPOSE 783
 
-# Start SpamAssassin
-CMD ["spamd", "--nouser-config", "--max-children", "5", "--helper-home-dir=/var/lib/spamassassin"]
+# Set up entry point
+
+COPY scripts/entrypoint-spamassassin.sh /app/entrypoint-spamassassin.sh
+RUN chmod a+x  /app/entrypoint-spamassassin.sh
+
+ENTRYPOINT ["/app/entrypoint-spamassassin.sh"]
+

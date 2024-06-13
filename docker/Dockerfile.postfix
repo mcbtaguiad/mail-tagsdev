@@ -1,29 +1,40 @@
-FROM debian:latest
+# Use Ubuntu as the base image
+FROM ubuntu:24.10
 
-# Install Postfix and OpenSSL
+LABEL Maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
+LABEL Description="Docker Mail"
+
 RUN apt-get update && \
-    apt-get install -y postfix openssl libsasl2-modules && \
+    apt-get install -y postfix postfix-policyd-spf-python opendkim libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
-RUN groupadd -g 1000 vmail && \
-    useradd -u 1000 -g 1000 vmail -d /srv/vmail && \
-    passwd -l vmail && \
-    mkdir /srv/mail && \
-    chown vmail:vmail /srv/mail
+RUN groupadd -g 5000 vmail && \
+    useradd -s /usr/sbin/nologin -u 5000 -g 5000 vmail && \
+    mkdir -p /var/mail/vhosts/tagsdev.xyz && \
+    chown -R vmail:vmail /var/mail/vhosts && \
+    chmod -R 775 /var/mail/vhosts && \
+    mkdir -p /var/log/mail && \
+    echo 'mail.tagsdev.xyz' > /etc/mailname
+
+
+
+RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
+    sysctl -p
+
 
 # Copy custom configuration files
 COPY resources/main.cf /etc/postfix/main.cf
 COPY resources/master.cf /etc/postfix/master.cf
+COPY resources/virtual_domains /etc/postfix/virtual_domains
+COPY resources/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
+COPY resources/opendkim.conf /etc/opendkim.conf
 
-# Generate a self-signed SSL certificate
-# RUN mkdir -p /etc/postfix/ssl && \
-#     openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/postfix/ssl/server.key -out /etc/postfix/ssl/server.crt -days 365 -subj "/C=US/ST=California/L=San Francisco/O=Example/CN=example.com"
+WORKDIR /app
 
-# Enable TLS 1.3 in Postfix
-RUN postconf -e smtpd_tls_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1,TLSv1.2,TLSv1.3
+COPY scripts/add_user.sh /app
+RUN chmod a+x  /app/add_user.sh
 
-# Expose SMTP ports
-EXPOSE 25 587
+COPY scripts/entrypoint-postfix.sh /app
+RUN chmod a+x  /app/entrypoint-postfix.sh
 
-# Start Postfix
-CMD ["postfix", "start-fg"]
+ENTRYPOINT ["/app/entrypoint-postfix.sh"]

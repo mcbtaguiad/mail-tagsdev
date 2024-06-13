@@ -19,11 +19,6 @@ spec:
       port: 25
       targetPort: 25
       protocol: TCP
-    # ESMTP with implicit TLS
-    - name: esmtp-implicit
-      port: 465
-      targetPort: 465
-      protocol: TCP
     # ESMTP with explicit TLS (STARTTLS)
     - name: esmtp-explicit
       port: 587

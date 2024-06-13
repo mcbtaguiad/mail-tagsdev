@@ -16,12 +16,17 @@ spec:
   ports:
     # IMAPS with implicit TLS
     - name: imap-implicit
+      port: 143
+      targetPort: 143
+      protocol: TCP
+    - name: pop3-implicit
       port: 993
       targetPort: 993
       protocol: TCP
-    - name: pop3-implicit
-      port: 995
-      targetPort: 995
+    - name: dovecot
+      port: 50001
+      targetPort: 50001
       protocol: TCP
+    
 
 

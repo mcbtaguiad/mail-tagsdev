@@ -8,28 +8,26 @@ services:
             context: .
             dockerfile: docker/Dockerfile
         restart: always
-    mail-tagsdev-postfix:
-        container_name: mail-tagsdev-postfix
-        image: ghcr.io/mcbtaguiad/mail-tagsdev/postfix:v0.0.1-test
-        build:
-            context: .
-            dockerfile: docker/Dockerfile.postfix
-        restart: always
-        # ports:
-        #     - "8000:80"
-    mail-tagsdev-dovecot:
-        container_name: mail-tagsdev-postfix
-        image: ghcr.io/mcbtaguiad/mail-tagsdev/dovecot:v0.0.1-test
-        build:
-            context: .
-            dockerfile: docker/Dockerfile.dovecot
-        restart: always
-    # mail-tagsdev-spamassassin:
-    #     container_name: mail-tagsdev-spamassassin
-    #     image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.0-test
+    # mail-tagsdev-postfix:
+    #     container_name: mail-tagsdev-postfix
+    #     image: ghcr.io/mcbtaguiad/mail-tagsdev/postfix:v0.0.1-test
     #     build:
     #         context: .
-    #         dockerfile: docker/Dockerfile.spamassassin
+    #         dockerfile: docker/Dockerfile.postfix
     #     restart: always
     #     # ports:
     #     #     - "8000:80"
+    # mail-tagsdev-dovecot:
+    #     container_name: mail-tagsdev-dovecot
+    #     image: ghcr.io/mcbtaguiad/mail-tagsdev/dovecot:v0.0.1-test
+    #     build:
+    #         context: .
+    #         dockerfile: docker/Dockerfile.dovecot
+    #     restart: always
+    mail-tagsdev-spamassassin:
+        container_name: mail-tagsdev-spamassassin
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-test
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.spamassassin
+        restart: always
