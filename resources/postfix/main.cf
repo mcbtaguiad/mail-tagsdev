@@ -27,10 +27,10 @@ smtpd_tls_exclude_ciphers = aNULL, SEED, CAMELLIA, RSA+AES, SHA1
 
 
 
-virtual_mailbox_domains = /etc/postfix/virtual_domains
+virtual_mailbox_domains = /var/mail/postfix/virtual_domains
 virtual_mailbox_base = /var/mail/vhosts
-virtual_mailbox_maps = hash:/etc/postfix/vmailbox
-virtual_alias_maps = hash:/etc/postfix/virtual_alias
+virtual_mailbox_maps = hash:/var/mail/postfix/vmailbox
+virtual_alias_maps = hash:/var/mail/postfix/virtual_alias
 virtual_minimum_uid = 100
 virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
@@ -125,3 +125,8 @@ smtpd_milters =
 non_smtpd_milters =
 
 policyd-spf_time_limit = 3600
+
+# openkdim
+smtpd_milters = inet:opendkim:8891
+non_smtpd_milters = $smtpd_milters
+milter_default_action = accept 

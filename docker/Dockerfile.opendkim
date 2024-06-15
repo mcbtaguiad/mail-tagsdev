@@ -1,0 +1,23 @@
+# Use Ubuntu as base image
+# Use Alpine Linux as the base image
+FROM alpine:latest
+
+LABEL maintainer="Your Name <your.email@example.com>"
+
+# Install necessary packages (OpenDKIM and OpenDKIM-libs)
+RUN apk --no-cache add opendkim opendkim-utils
+
+RUN mkdir -p /var/mail/opendkim && \
+    chown opendkim:opendkim /var/mail/opendkim
+
+# Copy the default configuration files into the image
+COPY resources/opendkim/opendkim.conf /etc/opendkim.conf
+
+WORKDIR /app
+
+COPY scripts/entrypoint-opendkim.sh /app
+RUN chmod a+x  /app/entrypoint-opendkim.sh
+
+USER opendkim
+
+ENTRYPOINT ["/app/entrypoint-opendkim.sh"]

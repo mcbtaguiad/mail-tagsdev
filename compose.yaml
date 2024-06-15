@@ -31,3 +31,12 @@ services:
             context: .
             dockerfile: docker/Dockerfile.spamassassin
         restart: always
+
+    mail-tagsdev-opendkim:
+        container_name: mail-tagsdev-opendkim
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/opendkim:v0.0.1-test
+        build:
+            context: .
+            dockerfile: docker/Dockerfile.opendkim
+        # entrypoint: tail -f /dev/null
+        restart: always

@@ -30,11 +30,11 @@ else
 	BASEDIR="$(postconf | grep ^virtual_mailbox_base | cut -f3 -d' ')";
 fi
 
-if [ -f /etc/postfix/vmailbox ]
+if [ -f /var/mail/postfix/vmailbox ]
 then
 	echo "Adding Postfix user configuration..."
-	echo $ADDRESS $DOMAIN/$USERNAME/ >> /etc/postfix/vmailbox
-	postmap /etc/postfix/vmailbox
+	echo $ADDRESS $DOMAIN/$USERNAME/ >> /var/mail/postfix/vmailbox
+	postmap /var/mail/postfix/vmailbox
 
 	if [ $? -eq 0 ]
 	then

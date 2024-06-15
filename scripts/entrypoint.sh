@@ -13,6 +13,10 @@ echo "starting postfix"
 # postconf maillog_file=/var/log/mail/postfix.log &
 # postfix upgrade-configuration &
 # sleep 10 
+touch /etc/postfix/vmailbox &
+touch /etc/postfix/virtual_alias &
+echo "root@example.com admin@example.com" > /etc/postfix/virtual_alias &
+echo 'mail.tagsdev.xyz' > /etc/mailname &
 postmap /etc/postfix/virtual_alias &
 postfix start &
 # needed to run if pvc is mounted and not fresh install
@@ -26,10 +30,9 @@ dovecot -F &
 # amavisd -c /etc/amavisd/amavisd.conf genrsa /etc/amavisd/tagsdev.xyz.dkim20200512.pem 2048
 # amavisd foreground  &
 
-echo 'opendkim'
-mkdir -p /etc/opendkim/keys/ & 
-opendkim-genkey -b 2048 -h sha256 -s dkim20200516 -d tagsdev.xyz --directory=/etc/opendkim/keys/ &
-opendkim -f -x /etc/opendkim.conf -p inet:8891@localhost &
+# echo 'opendkim'
+# opendkim-genkey -b 2048 -h sha256 -s dkim20200516 -d tagsdev.xyz --directory=/var/mail/opendkim &
+# opendkim -f -x /etc/opendkim.conf -p inet:8891@localhost &
 
 while true; do
         ( find "$logDir" -type f -print0 | xargs -0 tail --verbose --follow --lines=0 )&

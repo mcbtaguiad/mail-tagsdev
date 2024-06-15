@@ -27,7 +27,7 @@ COPY resources/main.cf /etc/postfix/main.cf
 COPY resources/master.cf /etc/postfix/master.cf
 COPY resources/virtual_domains /etc/postfix/virtual_domains
 COPY resources/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
-COPY resources/opendkim.conf /etc/opendkim.conf
+# COPY resources/opendkim.conf /etc/opendkim.conf
 
 WORKDIR /app
 

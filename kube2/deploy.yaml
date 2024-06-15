@@ -83,6 +83,14 @@ spec:
         - name: data
           mountPath: /var/mail/vhosts/tagsdev.xyz
           readOnly: false
+          subPath: dovecot
+        
+        - name: data
+          mountPath: /var/mail/postfix/
+          readOnly: false
+          subPath: postfix
+
+          
 
         - mountPath: /etc/mail/ssl/
           name: mail-tls
