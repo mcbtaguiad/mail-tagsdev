@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spamassassin
+  name: opendkim
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spamassassin
+      app: opendkim
   template:
     metadata:
       labels:
-        app: spamassassin
+        app: opendkim
     spec:
       affinity:
         nodeAffinity:
@@ -37,25 +37,25 @@ spec:
                 values:
                 - '4'
       #hostNetwork: true
-      # hostname: 'spamassassin'
+      # hostname: 'opendkim'
       imagePullSecrets:
       - name: ghcr.io
-      # subdomain: spamassassin
+      # subdomain: opendkim
       containers:
-      - name: spamassassin
-        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-test
+      - name: opendkim
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/opendkim:v0.0.1-test
         imagePullPolicy: Always
         resources:
           limits:
-            memory: 500Mi
-            cpu: 500m
-          requests:
             memory: 100Mi
-            cpu: 250m
+            cpu: 25m
+          requests:
+            memory: 25Mi
+            cpu: 10m
         ports:
-        - name: spamassassin
-          containerPort: 783
+        - name: opendkim
+          containerPort: 8891
           protocol: TCP
-          #hostPort: 783
+          #hostPort: 8891
       restartPolicy: Always
 

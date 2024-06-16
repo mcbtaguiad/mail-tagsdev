@@ -79,8 +79,19 @@ spec:
             cpu: 250m
 
         volumeMounts:
+        - name: data
+          mountPath: /var/mail/postfix/
+          readOnly: false
+          subPath: postfix
+        
+        - name: data
+          mountPath: /var/mail/vhosts/tagsdev.xyz
+          readOnly: false
+          subPath: dovecot
+        
         - mountPath: /etc/mail/ssl/
-          name: postfix-tls
+          name: mail-tls
+
         ports:
         - name: transfer
           containerPort: 25
@@ -104,8 +115,11 @@ spec:
       #  kubernetes.io/hostname: luna
 
       volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mail-pvc
       # certificates
-      - name: postfix-tls
+      - name: mail-tls
         secret:
           secretName: mail-tls
           items:

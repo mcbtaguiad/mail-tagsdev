@@ -5,7 +5,6 @@
 # Tagsdev Mail Opendkim.
 # ============================================================================ #
 
-
 if test -f /var/mail/opendkim; then
         echo 'dkim key exist'
         chown opendkim:opendkim /var/mail/opendkim/*

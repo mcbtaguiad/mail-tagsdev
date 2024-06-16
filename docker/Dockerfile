@@ -38,7 +38,7 @@ COPY resources/dovecot/dovecot.conf /etc/dovecot/dovecot.conf
 # COPY resources/ssl-params.conf /etc/dovecot/ssl-params.conf
 COPY resources/postfix/main.cf /etc/postfix/main.cf
 COPY resources/postfix/master.cf /etc/postfix/master.cf
-COPY resources/postfix/virtual_domains /etc/postfix/virtual_domains
+COPY resources/postfix/virtual_domains /var/mail/postfix/virtual_alias
 # COPY resources/amavisd.conf /etc/amavis/conf.d/amavisd.conf
 COPY resources/postfix/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
 # COPY resources/postfix/opendkim.conf /etc/opendkim.conf

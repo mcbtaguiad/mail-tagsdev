@@ -42,8 +42,8 @@ dovecot_destination_recipient_limit = 1
 
 ##SASL##
 smtpd_sasl_auth_enable = yes
-smtpd_sasl_path = private/auth
-# smtpd_sasl_path = inet:dovecot:50001
+# smtpd_sasl_path = private/auth
+smtpd_sasl_path = inet:dovecot:50001
 smtpd_sasl_type = dovecot
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_local_domain = $mydomain
@@ -121,12 +121,9 @@ postscreen_upstream_proxy_timeout = 30s
 
 milter_protocol = 6
 milter_default_action = accept
-smtpd_milters =
-non_smtpd_milters =
-
 policyd-spf_time_limit = 3600
 
 # openkdim
 smtpd_milters = inet:opendkim:8891
-non_smtpd_milters = $smtpd_milters
+non_smtpd_milters = $smtpd_milters 
 milter_default_action = accept 

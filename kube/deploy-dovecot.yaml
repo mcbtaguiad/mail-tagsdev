@@ -79,8 +79,20 @@ spec:
             cpu: 250m
 
         volumeMounts:
-        - mountPath: /etc/mail/ssl/
-          name: dovecot-tls
+        - name: data
+          mountPath: /var/mail/postfix/
+          readOnly: false
+          subPath: postfix
+
+        - name: data
+          mountPath: /var/mail/vhosts/tagsdev.xyz
+          readOnly: false
+          subPath: dovecot
+        
+        - name: mail-tls
+          mountPath: /etc/mail/ssl/
+          
+        
         ports:
         - name: esmtp-explicit
           containerPort: 587
@@ -107,9 +119,26 @@ spec:
       #nodeSelector:
       #  kubernetes.io/hostname: luna
 
+      initContainers:
+      - name: volume-permission
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          - 'chown -R 5000:5000 /var/mail/vhosts/tagsdev.xyz'
+          - 'chmod -R 775 /var/mail/vhosts/tagsdev.xyz' 
+        volumeMounts:
+          - name: data
+            mountPath: /var/mail/vhosts/tagsdev.xyz
+        securityContext:
+          runAsUser: 0
+
       volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mail-pvc
       # certificates
-      - name: dovecot-tls
+      - name: mail-tls
         secret:
           secretName: mail-tls
           items:

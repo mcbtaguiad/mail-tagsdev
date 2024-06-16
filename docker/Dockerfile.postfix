@@ -5,7 +5,7 @@ LABEL Maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
 LABEL Description="Docker Mail"
 
 RUN apt-get update && \
-    apt-get install -y postfix postfix-policyd-spf-python opendkim libsasl2-modules openssl inotify-tools && \
+    apt-get install -y postfix postfix-policyd-spf-python dovecot-core libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
 RUN groupadd -g 5000 vmail && \
@@ -16,17 +16,14 @@ RUN groupadd -g 5000 vmail && \
     mkdir -p /var/log/mail && \
     echo 'mail.tagsdev.xyz' > /etc/mailname
 
-
-
 RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
     sysctl -p
 
-
 # Copy custom configuration files
-COPY resources/main.cf /etc/postfix/main.cf
-COPY resources/master.cf /etc/postfix/master.cf
-COPY resources/virtual_domains /etc/postfix/virtual_domains
-COPY resources/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
+COPY resources/postfix/main.cf /etc/postfix/main.cf
+COPY resources/postfix/master.cf /etc/postfix/master.cf
+COPY resources/postfix/virtual_domains /var/mail/postfix/virtual_domains
+COPY resources/postfix/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
 # COPY resources/opendkim.conf /etc/opendkim.conf
 
 WORKDIR /app

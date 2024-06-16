@@ -2,10 +2,11 @@
 FROM ubuntu:24.10
 
 LABEL Maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
-LABEL Description="Docker Mail"
+LABEL Description="Docker Mail Dovecot"
 
 RUN apt-get update && \
-    apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd dovecot-pop3d dovecot-sieve opendkim libsasl2-modules openssl inotify-tools && \
+    apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd dovecot-pop3d \
+    dovecot-sieve postfix opendkim libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
 RUN groupadd -g 5000 vmail && \
@@ -25,9 +26,8 @@ RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
 
 
 # Copy custom configuration files
-COPY resources/dovecot.conf /etc/dovecot/dovecot.conf
+COPY resources/dovecot/dovecot.conf /etc/dovecot/dovecot.conf
 # COPY resources/ssl-params.conf /etc/dovecot/ssl-params.conf
-COPY resources/opendkim.conf /etc/opendkim.conf
 
 WORKDIR /app
 

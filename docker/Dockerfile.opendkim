@@ -2,10 +2,13 @@
 # Use Alpine Linux as the base image
 FROM alpine:latest
 
-LABEL maintainer="Your Name <your.email@example.com>"
+LABEL maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
 
 # Install necessary packages (OpenDKIM and OpenDKIM-libs)
-RUN apk --no-cache add opendkim opendkim-utils
+RUN apk --no-cache add opendkim opendkim-utils shadow 
+
+RUN usermod --uid 5000 opendkim && \
+    groupmod --gid 5000 opendkim
 
 RUN mkdir -p /var/mail/opendkim && \
     chown opendkim:opendkim /var/mail/opendkim
