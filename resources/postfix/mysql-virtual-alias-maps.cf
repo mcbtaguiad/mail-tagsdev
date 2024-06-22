@@ -1,0 +1,5 @@
+user = root
+password = Therealdeal1!
+hosts = mariadb.database.svc
+dbname = mail
+query = SELECT destination FROM virtual_aliases WHERE source='%s'

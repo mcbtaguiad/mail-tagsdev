@@ -8,6 +8,8 @@ RUN apt-get update && \
     apt-get install -y postfix postfix-policyd-spf-python dovecot-core libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
+RUN apt install -y postfix-mysql
+
 RUN groupadd -g 5000 vmail && \
     useradd -s /usr/sbin/nologin -u 5000 -g 5000 vmail && \
     mkdir -p /var/mail/vhosts/tagsdev.xyz && \
@@ -24,6 +26,10 @@ COPY resources/postfix/main.cf /etc/postfix/main.cf
 COPY resources/postfix/master.cf /etc/postfix/master.cf
 COPY resources/postfix/virtual_domains /var/mail/postfix/virtual_domains
 COPY resources/postfix/policyd-spf.conf /etc/python-policyd-spf/policyd-spf.conf
+COPY resources/postfix/mysql-virtual-alias-maps.cf /etc/postfix/mysql-virtual-alias-maps.cf
+COPY resources/postfix/mysql-virtual-email2email.cf /etc/postfix/mysql-virtual-email2email.cf
+COPY resources/postfix/mysql-virtual-mailbox-domains.cf /etc/postfix/mysql-virtual-mailbox-domains.cf
+COPY resources/postfix/mysql-virtual-mailbox-maps.cf /etc/postfix/mysql-virtual-mailbox-maps.cf
 # COPY resources/opendkim.conf /etc/opendkim.conf
 
 WORKDIR /app

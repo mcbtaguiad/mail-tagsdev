@@ -26,11 +26,19 @@ smtpd_tls_exclude_ciphers = aNULL, SEED, CAMELLIA, RSA+AES, SHA1
 
 
 
+# local
+#virtual_mailbox_domains = /var/mail/postfix/virtual_domains
+#virtual_mailbox_base = /var/mail/vhosts
+#virtual_mailbox_maps = hash:/var/mail/postfix/vmailbox
+#virtual_alias_maps = hash:/var/mail/postfix/virtual_alias
 
-virtual_mailbox_domains = /var/mail/postfix/virtual_domains
-virtual_mailbox_base = /var/mail/vhosts
-virtual_mailbox_maps = hash:/var/mail/postfix/vmailbox
-virtual_alias_maps = hash:/var/mail/postfix/virtual_alias
+# mysql
+# Virtual domains, users, and aliases
+virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf
+virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf,
+        mysql:/etc/postfix/mysql-virtual-email2email.cf
+
 virtual_minimum_uid = 100
 virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
@@ -71,6 +79,7 @@ smtpd_client_restrictions = permit_mynetworks, permit_sasl_authenticated, reject
 smtpd_discard_ehlo_keywords = silent-discard, dsn
 smtpd_data_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_pipelining
 disable_vrfy_command = yes
+strict_rfc821_envelopes = yes
 smtpd_sender_restrictions = $dms_smtpd_sender_restrictions
 
 dms_smtpd_sender_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unknown_sender_domain

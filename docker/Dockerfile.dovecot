@@ -9,6 +9,8 @@ RUN apt-get update && \
     dovecot-sieve postfix opendkim libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
+RUN apt install -y dovecot-mysql
+
 RUN groupadd -g 5000 vmail && \
     useradd -s /usr/sbin/nologin -u 5000 -g 5000 vmail && \
     usermod -aG vmail dovecot && \
@@ -27,6 +29,7 @@ RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
 
 # Copy custom configuration files
 COPY resources/dovecot/dovecot.conf /etc/dovecot/dovecot.conf
+COPY resources/dovecot/dovecot-sql.conf.ext /etc/dovecot/dovecot-sql.conf.ext
 # COPY resources/ssl-params.conf /etc/dovecot/ssl-params.conf
 
 WORKDIR /app

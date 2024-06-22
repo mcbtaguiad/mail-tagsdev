@@ -1,0 +1,5 @@
+user = root
+password = Therealdeal1!
+hosts = mariadb.database.svc
+dbname = mail
+query = SELECT 1 FROM virtual_users WHERE email='%s'
