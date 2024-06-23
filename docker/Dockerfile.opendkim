@@ -7,8 +7,8 @@ LABEL maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
 # Install necessary packages (OpenDKIM and OpenDKIM-libs)
 RUN apk --no-cache add opendkim opendkim-utils shadow 
 
-RUN usermod --uid 5000 opendkim && \
-    groupmod --gid 5000 opendkim
+RUN usermod --uid 1000 opendkim && \
+    groupmod --gid 1000 opendkim
 
 RUN mkdir -p /var/mail/opendkim && \
     chown opendkim:opendkim /var/mail/opendkim

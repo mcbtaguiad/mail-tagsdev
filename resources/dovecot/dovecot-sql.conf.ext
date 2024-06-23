@@ -1,4 +1,4 @@
 driver = mysql
-connect = host=mariadb.database.svc dbname=mail user=root password=Therealdeal1!
+connect = host=10.43.46.120 dbname=mail user=root password=Therealdeal1!
 default_pass_scheme = SHA512-CRYPT
 password_query = SELECT email as user, password FROM virtual_users WHERE email='%u';

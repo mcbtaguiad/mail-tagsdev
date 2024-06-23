@@ -64,20 +64,20 @@ spec:
           readOnly: false
           subPath: opendkim
 
-      # initContainers:
-      # - name: volume-permission
-      #   image: alpine:latest
-      #   command:
-      #     - sh
-      #     - -c
-      #     - 'mkdir -p /var/mail/opendkim'
-      #     - 'chown -R 1000:1000 /var/mail/opendkim'
-      #   volumeMounts:
-      #     - name: data
-      #       mountPath: /var/mail/opendkim
-      #       subPath: opendkim
-      #   securityContext:
-      #     runAsUser: 0
+      initContainers:
+      - name: volume-permission
+        image: alpine:latest
+        command:
+          - sh
+          - -c
+          # - 'mkdir -p /var/mail/opendkim'
+          - 'chown -R 1000:1000 /var/mail/opendkim'
+        volumeMounts:
+          - name: data
+            mountPath: /var/mail/opendkim
+            subPath: opendkim
+        securityContext:
+          runAsUser: 0
 
       restartPolicy: Always
       volumes:

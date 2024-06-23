@@ -7,14 +7,17 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN adduser spamd --disabled-login
+
 # Copy custom configuration file
 COPY resources/spamassassin/spamassassin /etc/spamassassin/spamassassin
+# COPY resources/spamassassin/65_dns.cf /etc/spamassassin/65_dns.cf
 COPY resources/spamassassin/local.cf /etc/mail/spamassassin/local.cf
 
 # Expose the required ports for SpamAssassin (optional)
 # Expose port 783 for spamd if needed
 # EXPOSE 783
 
-# Set up entry point
+USER spamd
 
-CMD ["spamd", "--create-prefs", "--syslog", "stderr", "--nouser-config", "--max-children", "5", "--helper-home-dir", "/var/lib/spamassassin", "--pidfile=/var/run/spamd.pid", "--listen", "0.0.0.0"]
+CMD ["spamd", "--create-prefs", "--syslog", "stderr", "--nouser-config", "--max-children", "5", "--helper-home-dir", "/var/lib/spamassassin", "--pidfile=/var/run/spamd.pid", "-A", "10.0.0.0/8", "--listen", "0.0.0.0"]

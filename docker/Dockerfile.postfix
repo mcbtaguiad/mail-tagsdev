@@ -5,7 +5,7 @@ LABEL Maintainer="Mark Taguiad <marktaguiad@tagsdev.xyz>"
 LABEL Description="Docker Mail"
 
 RUN apt-get update && \
-    apt-get install -y postfix postfix-policyd-spf-python dovecot-core libsasl2-modules openssl inotify-tools && \
+    apt-get install -y postfix postfix-mysql postfix-policyd-spf-python dovecot-core libsasl2-modules spamc openssl inotify-tools && \
     apt-get clean
 
 RUN apt install -y postfix-mysql
@@ -16,6 +16,7 @@ RUN groupadd -g 5000 vmail && \
     chown -R vmail:vmail /var/mail/vhosts && \
     chmod -R 775 /var/mail/vhosts && \
     mkdir -p /var/log/mail && \
+    adduser spamd --disabled-login && \
     echo 'mail.tagsdev.xyz' > /etc/mailname
 
 RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
@@ -39,5 +40,7 @@ RUN chmod a+x  /app/add_user.sh
 
 COPY scripts/entrypoint-postfix.sh /app
 RUN chmod a+x  /app/entrypoint-postfix.sh
+
+USER postfix
 
 ENTRYPOINT ["/app/entrypoint-postfix.sh"]

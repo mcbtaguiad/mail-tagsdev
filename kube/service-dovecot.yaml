@@ -23,9 +23,13 @@ spec:
       port: 993
       targetPort: 993
       protocol: TCP
-    - name: dovecot
+    - name: dovecot-socket
       port: 50001
       targetPort: 50001
+      protocol: TCP
+    - name: dovecot-lmtp
+      port: 50002
+      targetPort: 50002
       protocol: TCP
     
 

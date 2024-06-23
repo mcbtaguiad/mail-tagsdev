@@ -14,7 +14,7 @@
 
 #   Add *****SPAM***** to the Subject header of spam e-mails
 #
-rewrite_header Subject *****SPAM*****
+rewrite_header Subject [***** SPAM _SCORE_ *****]
 
 
 #   Save spam messages as a message/rfc822 MIME attachment instead of

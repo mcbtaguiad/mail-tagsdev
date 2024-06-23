@@ -79,10 +79,10 @@ spec:
             cpu: 250m
 
         volumeMounts:
-        - name: data
-          mountPath: /var/mail/postfix/
-          readOnly: false
-          subPath: postfix
+        # - name: data
+        #   mountPath: /var/mail/postfix/
+        #   readOnly: false
+        #   subPath: postfix
 
         - name: data
           mountPath: /var/mail/vhosts/tagsdev.xyz
@@ -91,6 +91,7 @@ spec:
         
         - name: mail-tls
           mountPath: /etc/mail/ssl/
+          readOnly: true
           
         
         ports:

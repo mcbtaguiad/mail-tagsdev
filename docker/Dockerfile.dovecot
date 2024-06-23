@@ -6,7 +6,7 @@ LABEL Description="Docker Mail Dovecot"
 
 RUN apt-get update && \
     apt-get install -y dovecot-core dovecot-imapd dovecot-lmtpd dovecot-pop3d \
-    dovecot-sieve postfix opendkim libsasl2-modules openssl inotify-tools && \
+    dovecot-sieve dovecot-mysql postfix opendkim libsasl2-modules openssl inotify-tools && \
     apt-get clean
 
 RUN apt install -y dovecot-mysql
@@ -39,5 +39,7 @@ RUN chmod a+x  /app/add_user.sh
 
 COPY scripts/entrypoint-dovecot.sh /app
 RUN chmod a+x  /app/entrypoint-dovecot.sh
+
+USER dovecot
 
 ENTRYPOINT ["/app/entrypoint-dovecot.sh"]

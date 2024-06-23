@@ -26,7 +26,7 @@ services:
         restart: always
     mail-tagsdev-spamassassin:
         container_name: mail-tagsdev-spamassassin
-        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-test
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-dev
         build:
             context: .
             dockerfile: docker/Dockerfile.spamassassin

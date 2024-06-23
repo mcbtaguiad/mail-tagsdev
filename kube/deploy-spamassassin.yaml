@@ -43,7 +43,7 @@ spec:
       # subdomain: spamassassin
       containers:
       - name: spamassassin
-        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-test
+        image: ghcr.io/mcbtaguiad/mail-tagsdev/spamassassin:v0.0.1-dev
         imagePullPolicy: Always
         resources:
           limits:

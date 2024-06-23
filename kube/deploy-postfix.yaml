@@ -84,24 +84,25 @@ spec:
           readOnly: false
           subPath: postfix
         
-        - name: data
-          mountPath: /var/mail/vhosts/tagsdev.xyz
-          readOnly: false
-          subPath: dovecot
+        # - name: data
+        #   mountPath: /var/mail/vhosts/tagsdev.xyz
+        #   readOnly: false
+        #   subPath: dovecot
         
         - mountPath: /etc/mail/ssl/
           name: mail-tls
+          readOnly: true
 
         ports:
         - name: transfer
           containerPort: 25
           protocol: TCP
           #hostPort: 25
-        - name: esmtp-implicit
+        - name: smtp-465
           containerPort: 465
           protocol: TCP
           #hostPort: 465
-        - name: esmtp-explicit
+        - name: smtp-587
           containerPort: 587
           protocol: TCP
           #hostPort: 587

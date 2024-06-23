@@ -1,4 +1,4 @@
-smtpd_banner = $myhostname ESMTP
+smtpd_banner = $myhostname ESMTP - Ginagawa mo dito?
 biff = no
 append_dot_mydomain = no
 readme_directory = no
@@ -7,14 +7,15 @@ smtputf8_enable = no
 myhostname = mail.tagsdev.xyz
 mydomain = mail.tagsdev.xyz
 myorigin = tagsdev.xyz
-mydestination = $myhostname, localhost.$mydomain, localhost
+mydestination = localhost
 relayhost =
 mynetworks = 127.0.0.0/8 [::1]/128 [fe80::]/64
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
-
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
 
 tls_high_cipherlist = ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
 tls_preempt_cipherlist = yes
@@ -39,10 +40,11 @@ virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
 virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf,
         mysql:/etc/postfix/mysql-virtual-email2email.cf
 
-virtual_minimum_uid = 100
-virtual_uid_maps = static:5000
-virtual_gid_maps = static:5000
-virtual_transport = dovecot
+#virtual_minimum_uid = 100
+#virtual_uid_maps = static:5000
+#virtual_gid_maps = static:5000
+#virtual_transport = dovecot
+virtual_transport = lmtp:inet:10.43.198.224:50002
 virtual_mailbox_limit = 104857600
 mailbox_size_limit = 0
 message_size_limit = 52428800
@@ -51,7 +53,7 @@ dovecot_destination_recipient_limit = 1
 ##SASL##
 smtpd_sasl_auth_enable = yes
 # smtpd_sasl_path = private/auth
-smtpd_sasl_path = inet:dovecot:50001
+smtpd_sasl_path = inet:10.43.198.224:50001
 smtpd_sasl_type = dovecot
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_local_domain = $mydomain
@@ -94,9 +96,6 @@ postscreen_dnsbl_sites =
     bl.spameatingmonkey.net=127.0.0.2
     dnsbl.sorbs.net
     psbl.surriel.com
-    list.dnswl.org=127.0.[0..255].0*-2
-    list.dnswl.org=127.0.[0..255].1*-3
-    list.dnswl.org=127.0.[0..255].[2..3]*-4
 postscreen_dnsbl_threshold = 3
 postscreen_dnsbl_allowlist_threshold = -1
 postscreen_greet_action = enforce
@@ -106,15 +105,11 @@ postscreen_bare_newline_action = enforce
 anvil_rate_time_unit = 60s
 smtpd_client_connection_rate_limit = 5
 smtpd_client_connection_count_limit = 5
-
 smtpd_error_sleep_time = 5s
 smtpd_soft_error_limit = 2
 smtpd_hard_error_limit = 3
-##################
-
 smtpd_recipient_limit = 250
 broken_sasl_auth_clients = yes
-
 
 
 # logs
@@ -124,15 +119,15 @@ maillog_file_permissions = 0600
 maillog_file_prefixes = /var, /dev/stdout
 maillog_file_rotate_suffix = %Y%m%d-%H%M%S
 
-
-postscreen_upstream_proxy_protocol = haproxy
-postscreen_upstream_proxy_timeout = 30s
-
-milter_protocol = 6
-milter_default_action = accept
+# spf policy
 policyd-spf_time_limit = 3600
 
 # openkdim
-smtpd_milters = inet:opendkim:8891
+milter_protocol = 6
+smtpd_milters = inet:10.43.48.125:8891
 non_smtpd_milters = $smtpd_milters 
 milter_default_action = accept 
+
+# haproxy
+smtpd_upstream_proxy_protocol = haproxy
+smtpd_upstream_proxy_timeout = 50s
